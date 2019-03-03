@@ -12,22 +12,16 @@ GAME RULES:
 //use an array to hold both scores
 var scores, roundScore, activePlayer, gamePlaying;
 
-var clickSound = new Audio('sounds/prism-1.mp3');
-var nextPlayerSound = new Audio('sounds/clay.mp3');
-var winnerSound = new Audio('sounds/moon.mp3')
-
-
 init();
 
 document.querySelector('.btn-roll').addEventListener('click', function(){
     if (gamePlaying){
-    clickSound.play();
     //1. Random Number
     var dice = Math.floor((Math.random()*6) + 1); 
     //2. Display the result
     var diceDOM = document.querySelector('.dice')
     diceDOM.style.display = 'block';
-    diceDOM.setAttribute('src', 'dice-'+dice+'.png' );
+    diceDOM.setAttribute('src', '/dice-'+dice+'.png' );
     //3. Update round score IF rolled number was not 1
     if(dice !== 1){
         //Add score
@@ -53,7 +47,6 @@ document.querySelector('.btn-hold').addEventListener('click', function(){
 
     // 3. Check if player won the game
     if (scores[activePlayer] >= 100){
-        winnerSound.play();
         document.querySelector('#name-' + activePlayer).textContent = "Winner!"
         document.querySelector('.dice').style.display = 'none';
         document.querySelector('.player-'+activePlayer+'-panel').classList.add('winner');
@@ -70,7 +63,6 @@ document.querySelector('.btn-hold').addEventListener('click', function(){
 
 function nextPlayer(){
     //Next player
-    nextPlayerSound.play();
     activePlayer === 0 ? activePlayer = 1 : activePlayer = 0; 
     roundScore = 0;
 
