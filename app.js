@@ -10,20 +10,39 @@ GAME RULES:
 */
 
 //use an array to hold both scores
-var scores, roundScore, activePlayer, gamePlaying;
+var scores, roundScore, activePlayer, gamePlaying, previousRoll, allRolls = [];
+
+var clickSound = new Audio('sounds/wipe.mp3');
+var nextPlayerSound = new Audio('sounds/clay.mp3');
+var winnerSound = new Audio('sounds/moon.mp3')
+
 
 init();
 
 document.querySelector('.btn-roll').addEventListener('click', function(){
     if (gamePlaying){
+    clickSound.play();
+    
     //1. Random Number
-    var dice = Math.floor((Math.random()*6) + 1); 
+    var dice = Math.floor((Math.random()*6) + 1); //dice is 6
+    //1b. Store previous dice roll in a variable
+    
+    
     //2. Display the result
     var diceDOM = document.querySelector('.dice')
     diceDOM.style.display = 'block';
-    diceDOM.setAttribute('src', '/dice-'+dice+'.png' );
+    diceDOM.setAttribute('src', 'dice-'+dice+'.png' );
+    //3a.
+    console.log('previous roll:' + previousRoll)
+    console.log('current roll:' + dice)
+
+    if (dice === 6 && previousRoll == 6){
+        console.log('You rolled two 6s in a row');
+        scores[activePlayer] = 0;
+        nextPlayer();
+    }
     //3. Update round score IF rolled number was not 1
-    if(dice !== 1){
+    else if(dice !== 1){
         //Add score
         roundScore = roundScore + dice;
         document.querySelector('#current-' + activePlayer).textContent = roundScore;
@@ -31,8 +50,8 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
         //Next player
         nextPlayer();
     }
+    previousRoll = dice
     }
-    
 })
 
 document.querySelector('.btn-hold').addEventListener('click', function(){
@@ -44,9 +63,12 @@ document.querySelector('.btn-hold').addEventListener('click', function(){
     // 2. Update user interface
     document.getElementById('score-'+ activePlayer).textContent = scores[activePlayer];
     
-
+    var playTo = document.querySelector('#scoreSelection');
+    var value = playTo.value || 50;
+    
     // 3. Check if player won the game
-    if (scores[activePlayer] >= 100){
+    if (scores[activePlayer] >= value){
+        winnerSound.play();
         document.querySelector('#name-' + activePlayer).textContent = "Winner!"
         document.querySelector('.dice').style.display = 'none';
         document.querySelector('.player-'+activePlayer+'-panel').classList.add('winner');
@@ -63,16 +85,18 @@ document.querySelector('.btn-hold').addEventListener('click', function(){
 
 function nextPlayer(){
     //Next player
+    
+    nextPlayerSound.play();
     activePlayer === 0 ? activePlayer = 1 : activePlayer = 0; 
     roundScore = 0;
-
+    
     document.getElementById('current-0').textContent = '0';
     document.getElementById('current-1').textContent = '0';
     
     document.querySelector('.player-0-panel').classList.toggle('active');
     document.querySelector('.player-1-panel').classList.toggle('active');
             
-    document.querySelector('.dice').style.display = 'none';
+    //document.querySelector('.dice').style.display = 'none';
 }
 
 //set up the New Game Button
